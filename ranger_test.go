@@ -177,6 +177,6 @@ func TestGetPoliciesWithService(t *testing.T) {
 	}
 
 	if policies[0].Service != "hive" {
-		t.Errorf("expected policy service 'kafka', got '%s'", policies[0].Service)
+		t.Errorf("expected policy service 'hive', got '%s'", policies[0].Service)
 	}
 }
