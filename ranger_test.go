@@ -177,6 +177,6 @@ func TestGetPoliciesWithService(t *testing.T) {
 	}
 
 	if policies[0].Service != "hdfs" {
-		t.Errorf("expected policy service 'kafka', got '%s'", policies[0].Service)
+		t.Errorf("expected policy service 'hdfs', got '%s'", policies[0].Service)
 	}
 }
