@@ -18,7 +18,7 @@ func GetFakeRangerServer() *httptest.Server {
 			{
 				"id": 2,
 				"name": "another policy",
-				"service": "hdfs"
+				"service": "hive"
 			}
 		]`
 
@@ -30,11 +30,11 @@ func GetFakeRangerServer() *httptest.Server {
 			}
 		]`
 
-		hdfsPolicy := `[
+		hivePolicy := `[
 			{
 				"id": 2,
 				"name": "another policy",
-				"service": "hdfs"
+				"service": "hive"
 			}
 		]`
 
@@ -45,8 +45,8 @@ func GetFakeRangerServer() *httptest.Server {
 			w.WriteHeader(http.StatusOK)
 			if r.URL.Query().Get("serviceName") == "kafka" {
 				w.Write([]byte(kafkaPolicy))
-			} else if r.URL.Query().Get("serviceName") == "hdfs" {
-				w.Write([]byte(hdfsPolicy))
+			} else if r.URL.Query().Get("serviceName") == "hive" {
+				w.Write([]byte(hivePolicy))
 			} else {
 				w.Write([]byte(policy))
 			}
@@ -146,8 +146,8 @@ func TestGetPolicies(t *testing.T) {
 		t.Errorf("expected policy name 'another policy', got '%s'", policies[1].Name)
 	}
 
-	if policies[1].Service != "hdfs" {
-		t.Errorf("expected policy service 'hdfs', got '%s'", policies[1].Service)
+	if policies[1].Service != "hive" {
+		t.Errorf("expected policy service 'hive', got '%s'", policies[1].Service)
 	}
 }
 
@@ -158,14 +158,14 @@ func TestGetPoliciesWithService(t *testing.T) {
 
 	c := NewClient(testServer.URL, "testuser", "testpassword")
 
-	policies, err := c.GetPolicies("hdfs")
+	policies, err := c.GetPolicies("hive")
 
 	if err != nil {
 		t.Errorf("expected no error, got %v", err)
 	}
 
 	if len(policies) != 1 {
-		t.Errorf("expected 1 policy for service 'hdfs', got %d", len(policies))
+		t.Errorf("expected 1 policy for service 'hive', got %d", len(policies))
 	}
 
 	if policies[0].ID != 2 {
@@ -176,7 +176,7 @@ func TestGetPoliciesWithService(t *testing.T) {
 		t.Errorf("expected policy name 'another policy', got '%s'", policies[0].Name)
 	}
 
-	if policies[0].Service != "hdfs" {
+	if policies[0].Service != "hive" {
 		t.Errorf("expected policy service 'kafka', got '%s'", policies[0].Service)
 	}
 }

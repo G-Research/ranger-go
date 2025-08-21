@@ -19,11 +19,22 @@ type ResourceType struct {
 }
 
 type Resources struct {
+	// Kafka Resources
 	Topic           *ResourceType `json:"topic,omitempty"`
 	Consumergroup   *ResourceType `json:"consumergroup,omitempty"`
 	Cluster         *ResourceType `json:"cluster,omitempty"`
 	TransactionalId *ResourceType `json:"transactionalid,omitempty"`
 	DelegationToken *ResourceType `json:"delegationtoken,omitempty"`
+
+	// Hive Resources
+	Database    *ResourceType `json:"database,omitempty"`
+	Table       *ResourceType `json:"table,omitempty"`
+	URL         *ResourceType `json:"url,omitempty"`
+	HiveService *ResourceType `json:"hiveService,omitempty"`
+	Global      *ResourceType `json:"globalResource,omitempty"`
+	TableType   *ResourceType `json:"tableType,omitempty"`
+	UDF         *ResourceType `json:"udf,omitempty"`
+	Column      *ResourceType `json:"column,omitempty"`
 }
 
 type Policy struct {

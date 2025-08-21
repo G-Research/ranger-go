@@ -4,6 +4,11 @@ A Go client library for Apache Ranger.
 
 This project provides a Go client for interacting with Apache Ranger's REST API. It includes functionality for managing policies, such as creating, updating, deleting, and fetching policies.
 
+This currently supports the following Ranger services:
+
+* Kafka
+* Hive
+
 ## Features
 
 - Get policies by service name or all policies.
