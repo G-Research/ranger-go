@@ -30,9 +30,8 @@ type Resources struct {
 	Database    *ResourceType `json:"database,omitempty"`
 	Table       *ResourceType `json:"table,omitempty"`
 	URL         *ResourceType `json:"url,omitempty"`
-	HiveService *ResourceType `json:"hiveService,omitempty"`
-	Global      *ResourceType `json:"globalResource,omitempty"`
-	TableType   *ResourceType `json:"tableType,omitempty"`
+	HiveService *ResourceType `json:"hiveservice,omitempty"`
+	Global      *ResourceType `json:"global,omitempty"`
 	UDF         *ResourceType `json:"udf,omitempty"`
 	Column      *ResourceType `json:"column,omitempty"`
 }
