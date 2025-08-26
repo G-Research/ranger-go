@@ -34,7 +34,7 @@ go get github.com/g-research/ranger-go
 Alternatively import into a Go project:
 
 ```go
-import "github.com/g-research/ranger-go/ranger"
+import "github.com/g-research/ranger-go"
 ```
 
 And then run `go get` with no arguments to download the package.
