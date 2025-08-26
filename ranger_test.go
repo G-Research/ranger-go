@@ -1,6 +1,8 @@
 package ranger
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -42,13 +44,70 @@ func GetFakeRangerServer() *httptest.Server {
 		case "/":
 			w.WriteHeader(http.StatusOK)
 		case "/service/public/v2/api/policy":
-			w.WriteHeader(http.StatusOK)
-			if r.URL.Query().Get("serviceName") == "kafka" {
-				w.Write([]byte(kafkaPolicy))
-			} else if r.URL.Query().Get("serviceName") == "hive" {
-				w.Write([]byte(hivePolicy))
-			} else {
-				w.Write([]byte(policy))
+			switch r.Method {
+			case http.MethodGet:
+				w.WriteHeader(http.StatusOK)
+				if r.URL.Query().Get("serviceName") == "kafka" {
+					w.Write([]byte(kafkaPolicy))
+				} else if r.URL.Query().Get("serviceName") == "hive" {
+					w.Write([]byte(hivePolicy))
+				} else {
+					w.Write([]byte(policy))
+				}
+			case http.MethodPost:
+				// The request contains a policy in the body
+				// Read the body and return a created policy
+				var newPolicy Policy
+				err := json.NewDecoder(r.Body).Decode(&newPolicy)
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					fmt.Fprintf(w, "Bad Request: %v", err)
+					return
+				}
+
+				createdPolicy := Policy{
+					ID:      1,
+					Name:    newPolicy.Name,
+					Service: newPolicy.Service,
+				}
+
+				jsonBytes, err := json.Marshal(createdPolicy)
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					w.Write([]byte("Internal Server Error"))
+					return
+				}
+				w.Write(jsonBytes)
+			}
+		// case with a specific policy number
+		case "/service/public/v2/api/policy/1":
+			switch r.Method {
+			case http.MethodPut:
+				// The request contains a policy in the body to update
+				var policyToUpdate Policy
+				err := json.NewDecoder(r.Body).Decode(&policyToUpdate)
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					fmt.Fprintf(w, "Bad Request: %v", err)
+					return
+				}
+
+				updatedPolicy := Policy{
+					ID:      policyToUpdate.ID,
+					Name:    policyToUpdate.Name,
+					Service: policyToUpdate.Service,
+				}
+
+				jsonBytes, err := json.Marshal(updatedPolicy)
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					w.Write([]byte("Internal Server Error"))
+					return
+				}
+				w.WriteHeader(http.StatusOK)
+				w.Write(jsonBytes)
+			case http.MethodDelete:
+				w.WriteHeader(http.StatusNoContent)
 			}
 		default:
 			w.WriteHeader(http.StatusNotFound)
@@ -102,6 +161,7 @@ func TestDoRequest(t *testing.T) {
 
 	if resp == nil {
 		t.Error("expected response, got nil")
+		return
 	}
 
 	if resp.StatusCode != http.StatusOK {
@@ -178,5 +238,96 @@ func TestGetPoliciesWithService(t *testing.T) {
 
 	if policies[0].Service != "hive" {
 		t.Errorf("expected policy service 'hive', got '%s'", policies[0].Service)
+	}
+}
+
+func TestCreatePolicy(t *testing.T) {
+	testServer := GetFakeRangerServer()
+
+	defer testServer.Close()
+
+	c := NewClient(testServer.URL, "testuser", "testpassword")
+
+	newPolicy := Policy{
+		Name:    "New policy",
+		Service: "kafka",
+	}
+
+	createdPolicy, err := c.CreatePolicy(&newPolicy)
+
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if createdPolicy == nil {
+		t.Error("expected created policy, got nil")
+		return
+	}
+
+	if createdPolicy.ID == 0 {
+		t.Error("expected created policy to have a non-zero ID")
+	}
+
+	if createdPolicy.Name != newPolicy.Name {
+		t.Errorf("expected policy name '%s', got '%s'", newPolicy.Name, createdPolicy.Name)
+	}
+
+	if createdPolicy.Service != newPolicy.Service {
+		t.Errorf("expected policy service '%s', got '%s'", newPolicy.Service, createdPolicy.Service)
+	}
+}
+
+func TestUpdatePolicy(t *testing.T) {
+	testServer := GetFakeRangerServer()
+
+	defer testServer.Close()
+
+	c := NewClient(testServer.URL, "testuser", "testpassword")
+
+	policyToUpdate := Policy{
+		ID:      1,
+		Name:    "New policy",
+		Service: "kafka",
+	}
+
+	updatedPolicy, err := c.UpdatePolicy(&policyToUpdate)
+
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
+	}
+
+	if updatedPolicy == nil {
+		t.Error("expected created policy, got nil")
+		return
+	}
+
+	if updatedPolicy.ID != policyToUpdate.ID {
+		t.Errorf("expected created policy to have ID %d, got %d", policyToUpdate.ID, updatedPolicy.ID)
+	}
+
+	if updatedPolicy.Name != policyToUpdate.Name {
+		t.Errorf("expected policy name '%s', got '%s'", policyToUpdate.Name, updatedPolicy.Name)
+	}
+
+	if updatedPolicy.Service != policyToUpdate.Service {
+		t.Errorf("expected policy service '%s', got '%s'", policyToUpdate.Service, updatedPolicy.Service)
+	}
+}
+
+func TestDeletePolicy(t *testing.T) {
+	testServer := GetFakeRangerServer()
+
+	defer testServer.Close()
+
+	c := NewClient(testServer.URL, "testuser", "testpassword")
+
+	policyToDelete := Policy{
+		ID: 1,
+	}
+
+	err := c.DeletePolicy(policyToDelete.ID)
+
+	if err != nil {
+		t.Errorf("expected no error, got %v", err)
 	}
 }
