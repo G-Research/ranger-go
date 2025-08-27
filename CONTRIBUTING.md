@@ -23,12 +23,6 @@ Understand our team structure and guidelines:
 
 - For details on our team and roles, please see the [MAINTAINERS.md](MAINTAINERS.md) file.
 
-## Building Dependencies
-
-Don't forget to install all necessary dependencies:
-
-- **Installation Steps**: [Insert detailed steps for installing dependencies on your platform here].
-
 ## Building the Project
 
 Ensure you can build the project successfully:
