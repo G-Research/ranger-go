@@ -139,7 +139,12 @@ if err != nil {
 }
 
 fmt.Printf("Successfully deleted policy with ID %d\n", policyId)
-```## License
+```
+
+## Code of Conduct
+This project adheres to our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+
+## License
 
 This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
 
