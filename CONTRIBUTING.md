@@ -60,7 +60,7 @@ Our coding standards and tools:
 
 Guidelines for filing issues:
 
-- **Where to File Issues**: Please file issues [raising an issue](https://github.com/G-Research/ranger-go/issues).
+- **Where to File Issues**: Please file issues [here](https://github.com/G-Research/ranger-go/issues).
 - **Issue Conventions**: Please use one of the available templates when raising an issue.
 
 ## Writing Pull Requests
