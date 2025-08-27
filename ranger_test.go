@@ -48,11 +48,17 @@ func GetFakeRangerServer() *httptest.Server {
 			case http.MethodGet:
 				w.WriteHeader(http.StatusOK)
 				if r.URL.Query().Get("serviceName") == "kafka" {
-					w.Write([]byte(kafkaPolicy))
+					if _, err := w.Write([]byte(kafkaPolicy)); err != nil {
+						fmt.Printf("Error writing response: %v", err)
+					}
 				} else if r.URL.Query().Get("serviceName") == "hive" {
-					w.Write([]byte(hivePolicy))
+					if _, err := w.Write([]byte(hivePolicy)); err != nil {
+						fmt.Printf("Error writing response: %v", err)
+					}
 				} else {
-					w.Write([]byte(policy))
+					if _, err := w.Write([]byte(policy)); err != nil {
+						fmt.Printf("Error writing response: %v", err)
+					}
 				}
 			case http.MethodPost:
 				// The request contains a policy in the body
@@ -74,10 +80,14 @@ func GetFakeRangerServer() *httptest.Server {
 				jsonBytes, err := json.Marshal(createdPolicy)
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
-					w.Write([]byte("Internal Server Error"))
+					if _, err := w.Write([]byte("Internal Server Error")); err != nil {
+						fmt.Printf("Error writing response: %v", err)
+					}
 					return
 				}
-				w.Write(jsonBytes)
+				if _, err := w.Write(jsonBytes); err != nil {
+					fmt.Printf("Error writing response: %v", err)
+				}
 			}
 		// case with a specific policy number
 		case "/service/public/v2/api/policy/1":
@@ -101,17 +111,23 @@ func GetFakeRangerServer() *httptest.Server {
 				jsonBytes, err := json.Marshal(updatedPolicy)
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
-					w.Write([]byte("Internal Server Error"))
+					if _, err := w.Write([]byte("Internal Server Error")); err != nil {
+						fmt.Printf("Error writing response: %v", err)
+					}
 					return
 				}
 				w.WriteHeader(http.StatusOK)
-				w.Write(jsonBytes)
+				if _, err := w.Write(jsonBytes); err != nil {
+					fmt.Printf("Error writing response: %v", err)
+				}
 			case http.MethodDelete:
 				w.WriteHeader(http.StatusNoContent)
 			}
 		default:
 			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte("Not Found"))
+			if _, err := w.Write([]byte("Not Found")); err != nil {
+				fmt.Printf("Error writing response: %v", err)
+			}
 		}
 	}))
 
