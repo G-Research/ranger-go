@@ -61,14 +61,14 @@ Our coding standards and tools:
 Guidelines for filing issues:
 
 - **Where to File Issues**: Please file issues [raising an issue](https://github.com/G-Research/ranger-go/issues).
-- **Issue Conventions**: Follow our conventions outlined in [ISSUE_TEMPLATE.md](ISSUE_TEMPLATE.md).
+- **Issue Conventions**: Please use one of the available templates when raising an issue.
 
 ## Writing Pull Requests
 
 Guidelines for pull requests:
 
 - **Where to File Pull Requests**: Submit your pull requests by forking this repository and raising [here](https://github.com/G-Research/ranger-go/compare).
-- **PR Conventions**: Follow our conventions outlined in [PULL_REQUEST_TEMPLATE.md](PULL_REQUEST_TEMPLATE.md).
+- **PR Conventions**: Please use the template shown when raising a Pull Request to help reviewers understand the intent behind your contribution.
 
 ## Reviewing Pull Requests
 
