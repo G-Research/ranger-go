@@ -61,7 +61,11 @@ func (c *Client) GetPolicy(policyId int) (*Policy, error) {
 		return nil, fmt.Errorf("error making get policy request to %s: %w", uri, err)
 	}
 
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			fmt.Printf("error closing response body: %v\n", err)
+		}
+	}()
 
 	var policy Policy
 
@@ -94,7 +98,11 @@ func (c *Client) GetPolicies(serviceName ...string) ([]Policy, error) {
 		return nil, fmt.Errorf("error making get policies request to %s: %w", uri, err)
 	}
 
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			fmt.Printf("error closing response body: %v\n", err)
+		}
+	}()
 
 	var policies []Policy
 
@@ -123,7 +131,12 @@ func (c *Client) CreatePolicy(p *Policy) (*Policy, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error making create policy request to %s: %w", uri, err)
 	}
-	defer resp.Body.Close()
+
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			fmt.Printf("error closing response body: %v\n", err)
+		}
+	}()
 
 	var createdPolicy Policy
 	if err := json.NewDecoder(resp.Body).Decode(&createdPolicy); err != nil {
