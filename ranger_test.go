@@ -67,7 +67,9 @@ func GetFakeRangerServer() *httptest.Server {
 				err := json.NewDecoder(r.Body).Decode(&newPolicy)
 				if err != nil {
 					w.WriteHeader(http.StatusBadRequest)
-					fmt.Fprintf(w, "Bad Request: %v", err)
+					if _, writeErr := fmt.Fprintf(w, "Bad Request: %v", err); writeErr != nil {
+						fmt.Printf("Error writing response: %v", writeErr)
+					}
 					return
 				}
 
@@ -98,7 +100,9 @@ func GetFakeRangerServer() *httptest.Server {
 				err := json.NewDecoder(r.Body).Decode(&policyToUpdate)
 				if err != nil {
 					w.WriteHeader(http.StatusBadRequest)
-					fmt.Fprintf(w, "Bad Request: %v", err)
+					if _, writeErr := fmt.Fprintf(w, "Bad Request: %v", err); writeErr != nil {
+						fmt.Printf("Error writing response: %v", writeErr)
+					}
 					return
 				}
 
