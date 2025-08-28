@@ -181,7 +181,12 @@ func (c *Client) UpdatePolicy(policy *Policy) (*Policy, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error making update policy request to %s: %w", uri, err)
 	}
-	defer resp.Body.Close()
+
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			fmt.Printf("error closing response body: %v\n", err)
+		}
+	}()
 
 	var updatedPolicy Policy
 	if err := json.NewDecoder(resp.Body).Decode(&updatedPolicy); err != nil {
@@ -203,7 +208,12 @@ func (c *Client) GetServices() ([]Service, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error making get services request to %s: %w", uri, err)
 	}
-	defer resp.Body.Close()
+
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			fmt.Printf("error closing response body: %v\n", err)
+		}
+	}()
 
 	var services []Service
 	if err := json.NewDecoder(resp.Body).Decode(&services); err != nil {
